@@ -1,0 +1,1 @@
+../rules/mvvm-architecture.md

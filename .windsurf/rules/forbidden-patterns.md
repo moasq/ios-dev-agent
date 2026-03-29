@@ -1,0 +1,1 @@
+../rules/forbidden-patterns.md

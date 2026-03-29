@@ -1,0 +1,1 @@
+../rules/scope.md
