@@ -1,9 +1,9 @@
 {
   "name": "ios-dev-agent",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Universal iOS development agent — 50+ skills, 8 agents, MCP servers for every AI coding tool",
   "bin": {
-    "ios-dev-agent": "./bin/cli.js"
+    "ios-dev-agent": "bin/cli.js"
   },
   "keywords": [
     "ios",
@@ -20,6 +20,6 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/moasq/ios-dev-agent"
+    "url": "git+https://github.com/moasq/ios-dev-agent.git"
   }
 }
