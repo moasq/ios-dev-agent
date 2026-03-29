@@ -60,11 +60,18 @@ That's it. Auto-detects your tool, installs everything, done.
 
 ### <img src="https://cdn.simpleicons.org/claude/D97757" width="18"> Claude Code
 
+**Option A — Plugin (recommended):**
+```bash
+claude plugin marketplace add moasq/ios-dev-agent
+claude plugin install ios-dev-agent
+```
+Skills, agents, rules, hooks, and MCP servers activate automatically. Updates sync when the marketplace updates.
+
+**Option B — npx:**
 ```bash
 npx ios-dev-agent claude
 ```
-
-Installs `.claude/` with skills, rules, agents, scripts, hooks + `.mcp.json` with Apple auth MCP server.
+Copies `.claude/` with skills, rules, agents, scripts, hooks + `.mcp.json` with Apple auth MCP server.
 
 ### <img src="https://cdn.simpleicons.org/cursor/000000" width="18"> Cursor
 

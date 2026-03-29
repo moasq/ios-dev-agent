@@ -1,8 +1,16 @@
 {
   "name": "ios-dev-agent",
-  "version": "1.0.0",
-  "description": "Universal iOS development agent — 50+ skills, 8 agents, MCP servers for Apple Developer auth and RevenueCat. Works with Claude Code, Codex, Cursor, Windsurf, Antigravity, OpenCode, Amp, Junie, and more.",
-  "author": "moasq",
+  "version": "1.0.2",
+  "description": "End-to-end iOS development kit — 50+ skills, 8 agents, 7 rules, Apple Developer auth + RevenueCat MCP servers.",
+  "author": {
+    "name": "moasq",
+    "url": "https://github.com/moasq"
+  },
+  "homepage": "https://github.com/moasq/ios-dev-agent",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moasq/ios-dev-agent.git"
+  },
   "license": "MIT",
   "keywords": [
     "ios",
@@ -14,5 +22,7 @@
     "revenuecat",
     "apple-developer",
     "mcp"
-  ]
+  ],
+  "hooks": "./hooks/hooks.json",
+  "mcpServers": "./.mcp.json"
 }
