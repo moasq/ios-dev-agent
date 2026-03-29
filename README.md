@@ -4,9 +4,9 @@
 
 # iOS Dev Agent
 
-**Universal iOS development agent for every AI coding tool.**
+**End-to-end iOS development kit for AI coding tools.**
 
-50+ skills · 8 agents · 7 rules · MCP servers · zero dependencies
+Build, ship, and manage App Store apps — from first line of code to App Store review.
 
 [![npm version](https://img.shields.io/npm/v/ios-dev-agent?style=for-the-badge&color=CB3837&logo=npm&logoColor=white)](https://www.npmjs.com/package/ios-dev-agent)
 [![npm downloads](https://img.shields.io/npm/dt/ios-dev-agent?style=for-the-badge&color=CB3837&logo=npm&logoColor=white)](https://www.npmjs.com/package/ios-dev-agent)
@@ -19,6 +19,28 @@
 ![iOS](https://img.shields.io/badge/iOS_26+-000000?style=flat-square&logo=apple&logoColor=white)
 
 </div>
+
+---
+
+## The Problem
+
+AI coding tools are powerful, but they don't know iOS. They generate deprecated APIs, break build rules, hardcode colors, skip accessibility, mix up architectures, and produce code that looks right but won't pass App Store review. You spend more time fixing the AI's output than writing code yourself.
+
+## What This Solves
+
+iOS Dev Agent gives your AI tool **deep iOS expertise** — the same knowledge a senior iOS engineer carries in their head:
+
+- **Your code actually builds.** 7 always-active rules enforce Swift 6 concurrency, SwiftUI-first architecture, AppTheme design tokens, and MVVM with `@Observable`. The AI can't generate `UIKit` storyboards, hardcoded colors, or deprecated APIs — it's blocked before the code is written.
+
+- **Your app is ready for the App Store.** Skills cover the full lifecycle: scaffold a project with [XcodeGen](https://github.com/yonaskolb/XcodeGen), build with `xcodebuild`, manage signing certificates, submit via [asc](https://github.com/rudrankriyam/App-Store-Connect-CLI) CLI, handle TestFlight, localize metadata, and preflight for App Store Review rejection patterns.
+
+- **Your subscriptions just work.** [RevenueCat](https://www.revenuecat.com/) integration with live API validation — configure products, entitlements, offerings, and sync your catalog between App Store Connect and RevenueCat without touching a dashboard.
+
+- **Your Apple account is connected.** Sign in to Apple Developer Portal directly from your AI tool — SRP-6a authentication with 2FA, register bundle IDs, manage certificates and provisioning profiles. No browser needed.
+
+- **Your AI catches its own mistakes.** 8 autonomous agents validate code quality, audit security, resolve build errors, investigate crashes, and feed lessons back into the rules so the same mistake never happens twice.
+
+**50+ skills · 8 agents · 7 rules · 12 MCP tools · works with 14 AI coding tools · zero dependencies.**
 
 ---
 
