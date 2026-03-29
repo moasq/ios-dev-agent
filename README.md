@@ -17,8 +17,6 @@
 
 <br>
 
-### Works with
-
 ![Claude Code](https://img.shields.io/badge/Claude_Code-D97757?style=flat-square&logo=claude&logoColor=white)
 ![Cursor](https://img.shields.io/badge/Cursor-000000?style=flat-square&logo=cursor&logoColor=white)
 ![Codex](https://img.shields.io/badge/OpenAI_Codex-412991?style=flat-square&logoColor=white)
@@ -38,185 +36,111 @@
 
 ---
 
-## Installation
+## Install
 
-### 1. Clone
-
-```bash
-git clone https://github.com/moasq/ios-dev-agent /tmp/ios-dev-agent
-cd ~/my-ios-project
-```
-
-### 2. Install for your tool
-
-<details>
-<summary><img src="https://cdn.simpleicons.org/claude/D97757" width="14"> <strong>Claude Code</strong></summary>
+One command. Run it from your iOS project directory.
 
 ```bash
-/tmp/ios-dev-agent/install.sh --tool claude
+npx ios-dev-agent            # auto-detects your tool
+npx ios-dev-agent claude     # Claude Code
+npx ios-dev-agent cursor     # Cursor
+npx ios-dev-agent codex      # OpenAI Codex
+npx ios-dev-agent windsurf   # Windsurf
+npx ios-dev-agent antigravity # Google Antigravity
+npx ios-dev-agent opencode   # OpenCode
+npx ios-dev-agent amp        # Amp
+npx ios-dev-agent junie      # JetBrains Junie
+npx ios-dev-agent cline      # Cline
+npx ios-dev-agent roo        # Roo Code
+npx ios-dev-agent continue   # Continue.dev
+npx ios-dev-agent all        # everything
 ```
 
-Or install as a plugin:
-```bash
-/plugin marketplace add moasq/ios-dev-agent
-/plugin install ios-dev-agent
+Restart your tool. Done.
+
+---
+
+## What gets installed
+
+### <img src="https://cdn.simpleicons.org/claude/D97757" width="16"> Claude Code
+
+```
+.claude/skills/     → 50+ skills (symlink to .agents/skills/)
+.claude/rules/      → 7 rule files
+.claude/agents/     → 8 agents
+.claude/scripts/    → MCP server + hook scripts
+.mcp.json           → apple-auth MCP server
+CLAUDE.md           → project instructions
 ```
 
-Adds: `.claude/` (skills, rules, agents, scripts) + `.mcp.json` (MCP server)
-</details>
+### <img src="https://cdn.simpleicons.org/cursor/000000" width="16"> Cursor
 
-<details>
-<summary><img src="https://cdn.simpleicons.org/cursor/000000" width="14"> <strong>Cursor</strong></summary>
-
-```bash
-/tmp/ios-dev-agent/install.sh --tool cursor
+```
+.agents/skills/     → 50+ skills
+.cursor/rules/      → 7 rules in .mdc format
+.cursor/mcp.json    → apple-auth MCP server
 ```
 
-Adds: `.agents/skills/` + `.cursor/rules/` (`.mdc` format) + `.cursor/mcp.json`
-</details>
+### OpenAI Codex
 
-<details>
-<summary><strong>OpenAI Codex</strong></summary>
-
-```bash
-/tmp/ios-dev-agent/install.sh --tool codex
 ```
-
-Then add the MCP server:
-```bash
-codex mcp add apple-auth -- python3 scripts/apple-auth-mcp-server.py
+.agents/skills/     → 50+ skills
+AGENTS.md           → project instructions
+scripts/            → MCP server scripts
 ```
+Then: `codex mcp add apple-auth -- python3 scripts/apple-auth-mcp-server.py`
 
-Adds: `.agents/skills/` + `AGENTS.md` + `scripts/`
-</details>
+### <img src="https://cdn.simpleicons.org/windsurf/0B100F" width="16"> Windsurf
 
-<details>
-<summary><img src="https://cdn.simpleicons.org/windsurf/0B100F" width="14"> <strong>Windsurf</strong></summary>
-
-```bash
-/tmp/ios-dev-agent/install.sh --tool windsurf
 ```
-
+.agents/skills/     → 50+ skills
+.windsurf/rules/    → 7 rules
+scripts/            → MCP server scripts
+```
 Then add to `~/.codeium/windsurf/mcp_config.json`:
 ```json
-{
-  "mcpServers": {
-    "apple-auth": {
-      "command": "python3",
-      "args": ["scripts/apple-auth-mcp-server.py"]
-    }
-  }
-}
+{ "mcpServers": { "apple-auth": { "command": "python3", "args": ["scripts/apple-auth-mcp-server.py"] } } }
 ```
 
-Adds: `.agents/skills/` + `.windsurf/rules/`
-</details>
+### <img src="https://cdn.simpleicons.org/google/4285F4" width="16"> Antigravity
 
-<details>
-<summary><img src="https://cdn.simpleicons.org/google/4285F4" width="14"> <strong>Antigravity</strong></summary>
-
-```bash
-/tmp/ios-dev-agent/install.sh --tool antigravity
 ```
-
+.agents/skills/     → 50+ skills
+GEMINI.md           → project instructions
+scripts/            → MCP server scripts
+```
 Then add to `~/.gemini/antigravity/mcp_config.json`:
 ```json
-{
-  "mcpServers": {
-    "apple-auth": {
-      "command": "python3",
-      "args": ["scripts/apple-auth-mcp-server.py"]
-    }
-  }
-}
+{ "mcpServers": { "apple-auth": { "command": "python3", "args": ["scripts/apple-auth-mcp-server.py"] } } }
 ```
 
-Adds: `.agents/skills/` + `GEMINI.md` + `scripts/`
-</details>
+### OpenCode
 
-<details>
-<summary><strong>OpenCode</strong></summary>
+```
+.agents/skills/     → 50+ skills
+.opencode/rules/    → 7 rules
+AGENTS.md           → project instructions
+```
+Then add `mcpServers` to `opencode.json`.
 
-```bash
-/tmp/ios-dev-agent/install.sh --tool opencode
+### Amp &bull; <img src="https://cdn.simpleicons.org/jetbrains/000000" width="16"> Junie &bull; Cline &bull; Roo Code &bull; Continue.dev
+
+```
+.agents/skills/     → 50+ skills
+AGENTS.md           → project instructions (Amp, Junie)
+.<tool>/rules/      → 7 rules in tool-native format
+.<tool>/mcp.json    → MCP config (Junie, Roo Code)
 ```
 
-Then add to `opencode.json`:
-```json
-{
-  "mcpServers": {
-    "apple-auth": {
-      "command": "python3",
-      "args": ["scripts/apple-auth-mcp-server.py"]
-    }
-  }
-}
-```
+### <img src="https://cdn.simpleicons.org/githubcopilot/000000" width="16"> Copilot &bull; <img src="https://cdn.simpleicons.org/googlegemini/8E75B2" width="16"> Gemini CLI &bull; Goose
 
-Adds: `.agents/skills/` + `.opencode/rules/` + `AGENTS.md`
-</details>
-
-<details>
-<summary><strong>Amp</strong></summary>
-
-```bash
-/tmp/ios-dev-agent/install.sh --tool amp
-```
-
-Then add MCP to `~/.config/amp/settings.json`.
-
-Adds: `.agents/skills/` + `AGENTS.md`
-</details>
-
-<details>
-<summary><img src="https://cdn.simpleicons.org/jetbrains/000000" width="14"> <strong>Junie</strong></summary>
-
-```bash
-/tmp/ios-dev-agent/install.sh --tool junie
-```
-
-Adds: `.agents/skills/` + `AGENTS.md` + `.junie/mcp/mcp.json`
-</details>
-
-<details>
-<summary><strong>Cline</strong> &bull; <strong>Roo Code</strong> &bull; <strong>Continue.dev</strong></summary>
-
-```bash
-/tmp/ios-dev-agent/install.sh --tool cline
-/tmp/ios-dev-agent/install.sh --tool roo
-/tmp/ios-dev-agent/install.sh --tool continue
-```
-
-Each installs `.agents/skills/` + tool-specific rules directory.
-</details>
-
-<details>
-<summary><img src="https://cdn.simpleicons.org/githubcopilot/000000" width="14"> <strong>GitHub Copilot</strong> &bull; <img src="https://cdn.simpleicons.org/googlegemini/8E75B2" width="14"> <strong>Gemini CLI</strong> &bull; <strong>Goose</strong></summary>
-
-Copy `.agents/` and configure MCP manually:
-
-```bash
-cp -r /tmp/ios-dev-agent/.agents/ .agents/
-cp /tmp/ios-dev-agent/scripts/apple-auth-mcp-server.py scripts/
-cp /tmp/ios-dev-agent/scripts/apple-developer-auth.py scripts/
-```
-
-</details>
-
-<details>
-<summary><strong>All tools at once</strong></summary>
-
-```bash
-/tmp/ios-dev-agent/install.sh --tool all
-```
-
-</details>
+Copy `.agents/` into your project and configure MCP manually per tool docs.
 
 ---
 
 ## Skills (50+)
 
-Every skill is a `SKILL.md` following the open [Agent Skills spec](https://agentskills.io/specification) — works across all supported tools.
+Every skill is a `SKILL.md` following the open [Agent Skills spec](https://agentskills.io/specification).
 
 <table>
 <tr>
@@ -270,11 +194,11 @@ Always active. Enforced on every file edit.
 
 ## MCP Server
 
-One server, 12 tools. Pure Python 3 stdlib — no pip, no npm, no gems.
+One server, 12 tools. Pure Python 3 — no pip, no npm, no gems.
 
 ### Apple Developer Portal
 
-Sign in to Apple Developer directly from your AI tool. Replicates [Fastlane Spaceship](https://github.com/fastlane/fastlane/tree/master/spaceship)'s SRP-6a + hashcash + 2FA flow — without requiring Fastlane.
+Sign in to Apple Developer directly from your AI tool. Replicates [Fastlane Spaceship](https://github.com/fastlane/fastlane/tree/master/spaceship)'s SRP-6a + hashcash + 2FA flow.
 
 | Tool | Description |
 |---|---|
@@ -296,35 +220,17 @@ Sign in to Apple Developer directly from your AI tool. Replicates [Fastlane Spac
 | `rc_setup` | Configure + validate API key and project ID |
 | `rc_revoke` | Remove stored credentials |
 
-## How It Works
-
-```
-.agents/skills/     Universal skills (Agent Skills spec)
-.agents/agents/     Autonomous agents
-rules/              Shared rules (markdown)
-scripts/            MCP servers + automation scripts
-install.sh          One-command setup for any tool
-```
-
-Each tool gets its own config directory with **symlinks** back to `rules/` and `.agents/`. One source of truth — every tool stays in sync.
-
 ## Credits
 
-| | Project | What we use it for |
+| | Project | Used for |
 |---|---|---|
-| <img src="https://cdn.simpleicons.org/swift/F05138" width="14"> | **[asc](https://github.com/rudrankriyam/App-Store-Connect-CLI)** by [@rudrankriyam](https://github.com/rudrankriyam) | App Store Connect CLI — TestFlight, submissions, metadata, signing |
-| <img src="https://cdn.simpleicons.org/xcode/147EFB" width="14"> | **[XcodeGen](https://github.com/yonaskolb/XcodeGen)** by [@yonaskolb](https://github.com/yonaskolb) | Generate Xcode projects from `project.yml` |
-| <img src="https://cdn.simpleicons.org/fastlane/00F200" width="14"> | **[Fastlane Spaceship](https://github.com/fastlane/fastlane/tree/master/spaceship)** | Auth flow reference — SRP-6a, 2FA, session management |
+| <img src="https://cdn.simpleicons.org/swift/F05138" width="14"> | **[asc](https://github.com/rudrankriyam/App-Store-Connect-CLI)** by [@rudrankriyam](https://github.com/rudrankriyam) | App Store Connect CLI |
+| <img src="https://cdn.simpleicons.org/xcode/147EFB" width="14"> | **[XcodeGen](https://github.com/yonaskolb/XcodeGen)** by [@yonaskolb](https://github.com/yonaskolb) | Xcode project generation |
+| <img src="https://cdn.simpleicons.org/fastlane/00F200" width="14"> | **[Fastlane Spaceship](https://github.com/fastlane/fastlane/tree/master/spaceship)** | SRP-6a auth flow reference |
 | <img src="https://cdn.simpleicons.org/revenuecat/F2545B" width="14"> | **[RevenueCat](https://www.revenuecat.com/)** | In-app purchase infrastructure |
-| | **[Agent Skills spec](https://agentskills.io/specification)** | Universal skill format for AI coding tools |
-| | **[Model Context Protocol](https://modelcontextprotocol.io/)** | Universal tool protocol for AI assistants |
-| <img src="https://cdn.simpleicons.org/apple/000000" width="14"> | **[Apple Developer Docs](https://developer.apple.com/documentation/)** | Framework APIs and references |
-
-## Requirements
-
-- **Python 3.8+** (ships with macOS)
-- No `pip install` &bull; No `npm install` &bull; No `gem install`
-- Zero external dependencies
+| | **[Agent Skills spec](https://agentskills.io/specification)** | Universal skill format |
+| | **[Model Context Protocol](https://modelcontextprotocol.io/)** | Universal tool protocol |
+| <img src="https://cdn.simpleicons.org/apple/000000" width="14"> | **[Apple Developer Docs](https://developer.apple.com/documentation/)** | Framework references |
 
 ## License
 
