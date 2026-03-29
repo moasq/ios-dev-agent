@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "apple-auth": {
+      "command": "python3",
+      "args": ["scripts/apple-auth-mcp-server.py"]
+    }
+  }
+}
