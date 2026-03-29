@@ -1,55 +1,217 @@
-# iOS Dev Agent
+<p align="center">
+  <img src="https://developer.apple.com/assets/elements/icons/swiftui/swiftui-96x96_2x.png" width="80" alt="SwiftUI">
+</p>
 
-Universal iOS development agent — 50+ skills, 8 agents, 7 rules, and MCP servers for Apple Developer auth and RevenueCat. Works with every major AI coding tool.
+<h1 align="center">iOS Dev Agent</h1>
 
-## Supported Tools
+<p align="center">
+  <strong>Universal iOS development agent for every AI coding tool.</strong><br>
+  50+ skills &bull; 8 agents &bull; 7 rules &bull; MCP servers &bull; zero dependencies
+</p>
 
-| Tool | Skills | Rules | MCP | Install |
-|---|---|---|---|---|
-| Claude Code | `.agents/skills/` | `.claude/rules/` | `.mcp.json` | `./install.sh` |
-| Codex (OpenAI) | `.agents/skills/` | `AGENTS.md` | `codex mcp add` | `./install.sh --tool codex` |
-| Cursor | `.agents/skills/` | `.cursor/rules/` | `.cursor/mcp.json` | `./install.sh --tool cursor` |
-| Windsurf | `.agents/skills/` | `.windsurf/rules/` | `mcp_config.json` | `./install.sh --tool windsurf` |
-| Antigravity | `.agents/skills/` | `GEMINI.md` | `mcp_config.json` | `./install.sh --tool antigravity` |
-| OpenCode | `.agents/skills/` | `.opencode/rules/` | `opencode.json` | `./install.sh --tool opencode` |
-| Amp | `.agents/skills/` | `AGENTS.md` | `settings.json` | `./install.sh --tool amp` |
-| Junie | `.agents/skills/` | `AGENTS.md` | `.junie/mcp/mcp.json` | `./install.sh --tool junie` |
-| Cline | `.agents/skills/` | `.clinerules/` | Extension settings | `./install.sh --tool cline` |
-| Roo Code | `.agents/skills/` | `.roo/rules/` | `.roo/mcp.json` | `./install.sh --tool roo` |
-| Continue.dev | `.agents/skills/` | `.continue/rules/` | `.continue/mcpServers/` | `./install.sh --tool continue` |
-| Gemini CLI | `.agents/skills/` | `GEMINI.md` | `settings.json` | Copy + `gemini mcp add` |
-| Copilot | `.agents/skills/` | `.github/copilot-instructions.md` | Repo settings | Copy `.agents/` |
-| Goose | `.agents/skills/` | `AGENTS.md` | `goose/config.yaml` | Copy + configure |
+<p align="center">
+  <a href="#quick-start">Quick Start</a> &bull;
+  <a href="#supported-tools">Supported Tools</a> &bull;
+  <a href="#whats-included">What's Included</a> &bull;
+  <a href="#mcp-servers">MCP Servers</a> &bull;
+  <a href="#credits">Credits</a>
+</p>
+
+---
 
 ## Quick Start
 
 ```bash
 cd ~/my-ios-project
 git clone https://github.com/moasq/ios-dev-agent /tmp/ios-dev-agent
-/tmp/ios-dev-agent/install.sh                    # Auto-detect tool
-/tmp/ios-dev-agent/install.sh --tool cursor      # Or specify
-/tmp/ios-dev-agent/install.sh --tool all         # Everything
+
+# Auto-detects your tool
+/tmp/ios-dev-agent/install.sh
+
+# Or pick one
+/tmp/ios-dev-agent/install.sh --tool cursor
+/tmp/ios-dev-agent/install.sh --tool codex
+/tmp/ios-dev-agent/install.sh --tool all
 ```
+
+Restart your tool. Done.
+
+## Supported Tools
+
+Works with **14 AI coding tools** out of the box:
+
+| | Tool | Skills | Rules | MCP | Install |
+|---|---|---|---|---|---|
+| <img src="https://claude.ai/favicon.ico" width="16"> | **Claude Code** | `.agents/skills/` | `.claude/rules/` | `.mcp.json` | `./install.sh` |
+| <img src="https://cursor.com/favicon.ico" width="16"> | **Cursor** | `.agents/skills/` | `.cursor/rules/` | `.cursor/mcp.json` | `--tool cursor` |
+| <img src="https://openai.com/favicon.ico" width="16"> | **Codex (OpenAI)** | `.agents/skills/` | `AGENTS.md` | `config.toml` | `--tool codex` |
+| | **Windsurf** | `.agents/skills/` | `.windsurf/rules/` | `mcp_config.json` | `--tool windsurf` |
+| | **Antigravity** | `.agents/skills/` | `GEMINI.md` | `mcp_config.json` | `--tool antigravity` |
+| | **OpenCode** | `.agents/skills/` | `.opencode/rules/` | `opencode.json` | `--tool opencode` |
+| | **Amp** | `.agents/skills/` | `AGENTS.md` | `settings.json` | `--tool amp` |
+| | **Junie** | `.agents/skills/` | `AGENTS.md` | `.junie/mcp/` | `--tool junie` |
+| | **Cline** | `.agents/skills/` | `.clinerules/` | Extension UI | `--tool cline` |
+| | **Roo Code** | `.agents/skills/` | `.roo/rules/` | `.roo/mcp.json` | `--tool roo` |
+| | **Continue.dev** | `.agents/skills/` | `.continue/rules/` | YAML config | `--tool continue` |
+| | **Gemini CLI** | `.agents/skills/` | `GEMINI.md` | `settings.json` | Copy + configure |
+| | **Copilot** | `.agents/skills/` | `.github/` | Repo settings | Copy `.agents/` |
+| | **Goose** | `.agents/skills/` | `AGENTS.md` | `config.yaml` | Copy + configure |
+
+Skills follow the open **[Agent Skills spec](https://agentskills.io/specification)** — one `SKILL.md` works everywhere.
 
 ## What's Included
 
-### 50+ Skills
-SwiftUI, HealthKit, App Store Connect, RevenueCat, build/deploy, debugging, and more. Each skill is a `SKILL.md` following the open Agent Skills spec.
+### Skills (50+)
 
-### 8 Agents
-app-validator, code-cleaner, security-auditor, test-runner, error-resolver, crash-resolver, rules-consolidator, app-store-preflight.
+<table>
+<tr>
+<td width="50%">
 
-### 7 Rules (always active)
-Swift 6/iOS 26+ conventions, forbidden patterns, AppTheme design system, MVVM architecture, file structure, component patterns, scope control.
+**SwiftUI & UI**
+- `/swiftui` — views, state, layouts
+- `/layout` — VStack, HStack, ZStack, Grid
+- `/navigation` — NavigationStack, TabView, sheets
+- `/animations` — timing curves, transitions, keyframes
+- `/forms` — TextField, validation, pickers
+- `/lists` — ForEach, swipe actions, pull-to-refresh
+- `/scroll-patterns` — parallax, paging, snap
+- `/charts` — Swift Charts, BarMark, LineMark
+- `/feedback-states` — loading, error, empty states
+- `/performance` — redundant updates, task cancellation
 
-### MCP Server (12 tools)
-**Apple Developer:** SRP-6a authentication, 2FA, portal operations (list apps/certs/profiles, register bundles).
-**RevenueCat:** API key validation, credential management.
+</td>
+<td width="50%">
+
+**Apple Frameworks**
+- `/healthkit` — authorization, queries, sleep analysis
+- `/foundation-models` — on-device AI, @Generable
+- `/notifications` — permissions, scheduling, badges
+- `/apple-signin` — AuthenticationServices, credential state
+- `/haptics` — impact, notification, custom patterns
+- `/accessibility` — VoiceOver, Dynamic Type, contrast
+- `/storage` — @AppStorage, SwiftData patterns
+- `/apple-developer-auth` — portal sign-in + 2FA
+
+</td>
+</tr>
+<tr>
+<td>
+
+**App Store Connect ([asc](https://github.com/rudrankriyam/App-Store-Connect-CLI) CLI)**
+- `/asc` — CLI setup, auth, operations
+- `/asc-release-flow` — submission workflow
+- `/asc-testflight-orchestration` — beta distribution
+- `/asc-metadata-sync` — localizations, descriptions
+- `/asc-signing-setup` — certs, profiles, bundle IDs
+- `/asc-xcode-build` — archive, export, upload
+- `/asc-crash-triage` — TestFlight crash reports
+- `/asc-whats-new-writer` — release notes generation
+- `/asc-ppp-pricing` — territory pricing
+- + 11 more asc skills
+
+</td>
+<td>
+
+**Build, Deploy & Workflow**
+- `/build` — xcodebuild, simulators, diagnostics
+- `/scaffold` — new project from scratch via [XcodeGen](https://github.com/yonaskolb/XcodeGen)
+- `/screenshots` — simulator capture automation
+- `/app-store-preflight` — rejection pattern scanner
+- `/revenuecat` — [RevenueCat](https://www.revenuecat.com/) IAP setup
+- `/review` — code quality, accessibility audit
+- `/debugging` — crash investigation, LLDB
+- `/fix-error` — auto-fix build errors
+- `/crash` — runtime crash resolution
+- `/ui-ux-pro-max` — design intelligence
+
+</td>
+</tr>
+</table>
+
+### Agents (8)
+
+| Agent | What it does |
+|---|---|
+| `app-validator` | Checks AppTheme usage, MVVM compliance, forbidden patterns |
+| `code-cleaner` | Finds dead code, redundancy, oversized files, unused imports |
+| `security-auditor` | Audits HealthKit PHI exposure, credential storage, entitlements |
+| `test-runner` | Runs Xcode build, analyzes errors and warnings |
+| `error-resolver` | Investigates unresolved build errors, applies fixes, verifies |
+| `crash-resolver` | Investigates runtime crashes, reads logs, applies fixes |
+| `rules-consolidator` | Feeds resolved errors back into rules to prevent recurrence |
+| `app-store-preflight` | Scans for App Store Review rejection patterns |
+
+### Rules (7 &mdash; always active)
+
+| Rule | Enforces |
+|---|---|
+| `swift-conventions` | Swift 6, iOS 26+, modern APIs, concurrency safety |
+| `forbidden-patterns` | No networking, no UIKit, no hardcoded styles, SPM only |
+| `design-system` | All colors/fonts/spacing from AppTheme tokens |
+| `mvvm-architecture` | @Observable ViewModels, Loadable&lt;T&gt; for async state |
+| `file-structure` | 150-line target, one type per file, body-as-TOC |
+| `components` | Button hierarchy, card patterns, empty states |
+| `scope` | Build minimum functional app, quality over quantity |
+
+## MCP Servers
+
+One MCP server, 12 tools. Pure Python 3 — no external dependencies.
+
+### Apple Developer Portal
+
+Authenticate to Apple's Developer Portal directly from your AI tool. Replicates [Fastlane Spaceship](https://github.com/fastlane/fastlane/tree/master/spaceship)'s SRP-6a + hashcash + 2FA flow — without requiring Fastlane.
+
+| Tool | Description |
+|---|---|
+| `status` | Live session validation &mdash; green / yellow / red |
+| `login_init` | Start SRP-6a sign-in (Apple ID + password) |
+| `login_2fa` | Submit 2FA verification code |
+| `request_sms` | Send 2FA code via SMS |
+| `revoke` | Sign out, clear session |
+| `list_apps` | List registered bundle IDs |
+| `list_certs` | List signing certificates |
+| `list_profiles` | List provisioning profiles |
+| `register_bundle` | Register a new bundle ID |
+
+### RevenueCat
+
+| Tool | Description |
+|---|---|
+| `rc_status` | Live API key validation &mdash; green / yellow / red |
+| `rc_setup` | Configure + validate API key and project ID |
+| `rc_revoke` | Remove stored credentials |
+
+## How It Works
+
+```
+.agents/skills/     Universal skills (Agent Skills spec)
+.agents/agents/     Autonomous agents
+rules/              Shared rules (markdown)
+scripts/            MCP servers + automation scripts
+install.sh          One-command setup for any tool
+```
+
+Each tool gets its own config directory (`.claude/`, `.cursor/`, `.opencode/`, etc.) with symlinks pointing back to the shared `rules/` and `.agents/` directories. One source of truth, every tool stays in sync.
+
+## Credits
+
+Built on top of excellent open-source tools:
+
+| Tool | Author | What we use it for |
+|---|---|---|
+| [asc](https://github.com/rudrankriyam/App-Store-Connect-CLI) | [@rudrankriyam](https://github.com/rudrankriyam) | App Store Connect CLI — TestFlight, submissions, metadata, signing, pricing |
+| [XcodeGen](https://github.com/yonaskolb/XcodeGen) | [@yonaskolb](https://github.com/yonaskolb) | Generate Xcode projects from `project.yml` |
+| [Fastlane Spaceship](https://github.com/fastlane/fastlane/tree/master/spaceship) | [Fastlane](https://github.com/fastlane) | Auth flow reference — SRP-6a protocol, 2FA handling, session management |
+| [RevenueCat](https://www.revenuecat.com/) | RevenueCat Inc. | In-app purchase infrastructure, subscription management |
+| [Agent Skills spec](https://agentskills.io/specification) | Community | Universal skill format adopted by 14+ AI coding tools |
+| [Model Context Protocol](https://modelcontextprotocol.io/) | [Anthropic](https://github.com/anthropics) | Universal tool protocol for AI coding assistants |
+| [Apple Developer Docs](https://developer.apple.com/documentation/) | Apple | Framework documentation, API references |
 
 ## Requirements
 
 - Python 3.8+ (ships with macOS)
-- No external dependencies
+- No `pip install`, no `npm install`, no `gem install`
+- Zero external dependencies
 
 ## License
 
