@@ -6,31 +6,17 @@
 
 **Universal iOS development agent for every AI coding tool.**
 
-50+ skills &bull; 8 agents &bull; 7 rules &bull; MCP servers &bull; zero dependencies
+50+ skills · 8 agents · 7 rules · MCP servers · zero dependencies
 
-<br>
+[![npm version](https://img.shields.io/npm/v/ios-dev-agent?style=for-the-badge&color=CB3837&logo=npm&logoColor=white)](https://www.npmjs.com/package/ios-dev-agent)
+[![npm downloads](https://img.shields.io/npm/dt/ios-dev-agent?style=for-the-badge&color=CB3837&logo=npm&logoColor=white)](https://www.npmjs.com/package/ios-dev-agent)
+[![GitHub stars](https://img.shields.io/github/stars/moasq/ios-dev-agent?style=for-the-badge&logo=github)](https://github.com/moasq/ios-dev-agent)
+[![License](https://img.shields.io/github/license/moasq/ios-dev-agent?style=for-the-badge)](LICENSE)
 
-![Swift](https://img.shields.io/badge/Swift_6-F05138?style=for-the-badge&logo=swift&logoColor=white)
-![Xcode](https://img.shields.io/badge/Xcode_26-147EFB?style=for-the-badge&logo=xcode&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-![Python](https://img.shields.io/badge/Python_3-3776AB?style=for-the-badge&logo=python&logoColor=white)
-
-<br>
-
-![Claude Code](https://img.shields.io/badge/Claude_Code-D97757?style=flat-square&logo=claude&logoColor=white)
-![Cursor](https://img.shields.io/badge/Cursor-000000?style=flat-square&logo=cursor&logoColor=white)
-![Codex](https://img.shields.io/badge/OpenAI_Codex-412991?style=flat-square&logoColor=white)
-![Windsurf](https://img.shields.io/badge/Windsurf-0B100F?style=flat-square&logo=windsurf&logoColor=white)
-![Antigravity](https://img.shields.io/badge/Antigravity-4285F4?style=flat-square&logo=google&logoColor=white)
-![OpenCode](https://img.shields.io/badge/OpenCode-22C55E?style=flat-square&logoColor=white)
-![Amp](https://img.shields.io/badge/Amp-FF5543?style=flat-square&logoColor=white)
-![Junie](https://img.shields.io/badge/Junie-000000?style=flat-square&logo=jetbrains&logoColor=white)
-![Cline](https://img.shields.io/badge/Cline-18181B?style=flat-square&logoColor=white)
-![Roo Code](https://img.shields.io/badge/Roo_Code-6366F1?style=flat-square&logoColor=white)
-![Continue](https://img.shields.io/badge/Continue-BE1B55?style=flat-square&logoColor=white)
-![Gemini CLI](https://img.shields.io/badge/Gemini_CLI-8E75B2?style=flat-square&logo=googlegemini&logoColor=white)
-![Copilot](https://img.shields.io/badge/GitHub_Copilot-000000?style=flat-square&logo=githubcopilot&logoColor=white)
-![Goose](https://img.shields.io/badge/Goose-000000?style=flat-square&logoColor=white)
+![Swift](https://img.shields.io/badge/Swift_6-F05138?style=flat-square&logo=swift&logoColor=white)
+![Xcode](https://img.shields.io/badge/Xcode_26-147EFB?style=flat-square&logo=xcode&logoColor=white)
+![Python](https://img.shields.io/badge/Python_3-3776AB?style=flat-square&logo=python&logoColor=white)
+![iOS](https://img.shields.io/badge/iOS_26+-000000?style=flat-square&logo=apple&logoColor=white)
 
 </div>
 
@@ -38,134 +24,158 @@
 
 ## Install
 
-One command. Run it from your iOS project directory.
+Run from your iOS project directory:
 
 ```bash
-npx ios-dev-agent            # auto-detects your tool
-npx ios-dev-agent claude     # Claude Code
-npx ios-dev-agent cursor     # Cursor
-npx ios-dev-agent codex      # OpenAI Codex
-npx ios-dev-agent windsurf   # Windsurf
-npx ios-dev-agent antigravity # Google Antigravity
-npx ios-dev-agent opencode   # OpenCode
-npx ios-dev-agent amp        # Amp
-npx ios-dev-agent junie      # JetBrains Junie
-npx ios-dev-agent cline      # Cline
-npx ios-dev-agent roo        # Roo Code
-npx ios-dev-agent continue   # Continue.dev
-npx ios-dev-agent all        # everything
+npx ios-dev-agent
 ```
 
-Restart your tool. Done.
+That's it. Auto-detects your tool, installs everything, done.
 
 ---
 
-## What gets installed
+## Per-Tool Install
 
-### <img src="https://cdn.simpleicons.org/claude/D97757" width="16"> Claude Code
+### <img src="https://cdn.simpleicons.org/claude/D97757" width="18"> Claude Code
 
-```
-.claude/skills/     → 50+ skills (symlink to .agents/skills/)
-.claude/rules/      → 7 rule files
-.claude/agents/     → 8 agents
-.claude/scripts/    → MCP server + hook scripts
-.mcp.json           → apple-auth MCP server
-CLAUDE.md           → project instructions
+```bash
+npx ios-dev-agent claude
 ```
 
-### <img src="https://cdn.simpleicons.org/cursor/000000" width="16"> Cursor
+Installs `.claude/` with skills, rules, agents, scripts, hooks + `.mcp.json` with Apple auth MCP server.
 
+### <img src="https://cdn.simpleicons.org/cursor/000000" width="18"> Cursor
+
+```bash
+npx ios-dev-agent cursor
 ```
-.agents/skills/     → 50+ skills
-.cursor/rules/      → 7 rules in .mdc format
-.cursor/mcp.json    → apple-auth MCP server
-```
+
+Installs `.agents/skills/` + `.cursor/rules/` in `.mdc` format + `.cursor/mcp.json`.
 
 ### OpenAI Codex
 
+```bash
+npx ios-dev-agent codex
 ```
-.agents/skills/     → 50+ skills
-AGENTS.md           → project instructions
-scripts/            → MCP server scripts
-```
-Then: `codex mcp add apple-auth -- python3 scripts/apple-auth-mcp-server.py`
 
-### <img src="https://cdn.simpleicons.org/windsurf/0B100F" width="16"> Windsurf
+Installs `.agents/skills/` + `AGENTS.md` + `scripts/`. Then run:
+```bash
+codex mcp add apple-auth -- python3 scripts/apple-auth-mcp-server.py
+```
 
+### <img src="https://cdn.simpleicons.org/windsurf/0B100F" width="18"> Windsurf
+
+```bash
+npx ios-dev-agent windsurf
 ```
-.agents/skills/     → 50+ skills
-.windsurf/rules/    → 7 rules
-scripts/            → MCP server scripts
-```
-Then add to `~/.codeium/windsurf/mcp_config.json`:
+
+Installs `.agents/skills/` + `.windsurf/rules/` + `scripts/`. Then add to `~/.codeium/windsurf/mcp_config.json`:
 ```json
 { "mcpServers": { "apple-auth": { "command": "python3", "args": ["scripts/apple-auth-mcp-server.py"] } } }
 ```
 
-### <img src="https://cdn.simpleicons.org/google/4285F4" width="16"> Antigravity
+### <img src="https://cdn.simpleicons.org/google/4285F4" width="18"> Google Antigravity
 
+```bash
+npx ios-dev-agent antigravity
 ```
-.agents/skills/     → 50+ skills
-GEMINI.md           → project instructions
-scripts/            → MCP server scripts
-```
-Then add to `~/.gemini/antigravity/mcp_config.json`:
-```json
-{ "mcpServers": { "apple-auth": { "command": "python3", "args": ["scripts/apple-auth-mcp-server.py"] } } }
-```
+
+Installs `.agents/skills/` + `GEMINI.md` + `scripts/`. Then add MCP to `~/.gemini/antigravity/mcp_config.json`.
 
 ### OpenCode
 
-```
-.agents/skills/     → 50+ skills
-.opencode/rules/    → 7 rules
-AGENTS.md           → project instructions
-```
-Then add `mcpServers` to `opencode.json`.
-
-### Amp &bull; <img src="https://cdn.simpleicons.org/jetbrains/000000" width="16"> Junie &bull; Cline &bull; Roo Code &bull; Continue.dev
-
-```
-.agents/skills/     → 50+ skills
-AGENTS.md           → project instructions (Amp, Junie)
-.<tool>/rules/      → 7 rules in tool-native format
-.<tool>/mcp.json    → MCP config (Junie, Roo Code)
+```bash
+npx ios-dev-agent opencode
 ```
 
-### <img src="https://cdn.simpleicons.org/githubcopilot/000000" width="16"> Copilot &bull; <img src="https://cdn.simpleicons.org/googlegemini/8E75B2" width="16"> Gemini CLI &bull; Goose
+Installs `.agents/skills/` + `.opencode/rules/` + `AGENTS.md`. Then add `mcpServers` to `opencode.json`.
 
-Copy `.agents/` into your project and configure MCP manually per tool docs.
+### Amp
+
+```bash
+npx ios-dev-agent amp
+```
+
+Installs `.agents/skills/` + `AGENTS.md`. Then add MCP to `~/.config/amp/settings.json`.
+
+### <img src="https://cdn.simpleicons.org/jetbrains/000000" width="18"> JetBrains Junie
+
+```bash
+npx ios-dev-agent junie
+```
+
+Installs `.agents/skills/` + `AGENTS.md` + `.junie/mcp/mcp.json`.
+
+### Cline
+
+```bash
+npx ios-dev-agent cline
+```
+
+Installs `.agents/skills/` + `.clinerules/`. Add MCP via the Cline extension settings UI.
+
+### Roo Code
+
+```bash
+npx ios-dev-agent roo
+```
+
+Installs `.agents/skills/` + `.roo/rules/` + `.roo/mcp.json`.
+
+### Continue.dev
+
+```bash
+npx ios-dev-agent continue
+```
+
+Installs `.agents/skills/` + `.continue/rules/`. Add MCP to `.continue/mcpServers/`.
+
+### <img src="https://cdn.simpleicons.org/githubcopilot/000000" width="18"> GitHub Copilot · <img src="https://cdn.simpleicons.org/googlegemini/8E75B2" width="18"> Gemini CLI · Goose
+
+Copy `.agents/` into your project and configure MCP per your tool's docs.
+
+### All tools
+
+```bash
+npx ios-dev-agent all
+```
 
 ---
 
-## Skills (50+)
+## What's Included
 
-Every skill is a `SKILL.md` following the open [Agent Skills spec](https://agentskills.io/specification).
+### Skills (50+)
+
+Every skill is a `SKILL.md` following the open [Agent Skills spec](https://agentskills.io/specification) — works across all 14 supported tools.
 
 <table>
 <tr>
 <td width="50%">
 
-#### SwiftUI & UI
-`/swiftui` &bull; `/layout` &bull; `/navigation` &bull; `/animations` &bull; `/forms` &bull; `/lists` &bull; `/scroll-patterns` &bull; `/charts` &bull; `/feedback-states` &bull; `/performance`
+**SwiftUI & UI**
 
-#### Apple Frameworks
-`/healthkit` &bull; `/foundation-models` &bull; `/notifications` &bull; `/apple-signin` &bull; `/haptics` &bull; `/accessibility` &bull; `/storage`
+`/swiftui` · `/layout` · `/navigation` · `/animations` · `/forms` · `/lists` · `/scroll-patterns` · `/charts` · `/feedback-states` · `/performance`
+
+**Apple Frameworks**
+
+`/healthkit` · `/foundation-models` · `/notifications` · `/apple-signin` · `/haptics` · `/accessibility` · `/storage`
 
 </td>
 <td width="50%">
 
-#### App Store Connect ([asc](https://github.com/rudrankriyam/App-Store-Connect-CLI) CLI)
-`/asc` &bull; `/asc-release-flow` &bull; `/asc-testflight-orchestration` &bull; `/asc-metadata-sync` &bull; `/asc-signing-setup` &bull; `/asc-xcode-build` &bull; `/asc-crash-triage` &bull; `/asc-whats-new-writer` &bull; `/asc-ppp-pricing` &bull; +11 more
+**App Store Connect** ([asc](https://github.com/rudrankriyam/App-Store-Connect-CLI) CLI)
 
-#### Build, Deploy & Workflow
-`/build` &bull; `/scaffold` &bull; `/screenshots` &bull; `/app-store-preflight` &bull; `/revenuecat` &bull; `/review` &bull; `/debugging` &bull; `/fix-error` &bull; `/crash` &bull; `/ui-ux-pro-max`
+`/asc` · `/asc-release-flow` · `/asc-testflight-orchestration` · `/asc-metadata-sync` · `/asc-signing-setup` · `/asc-xcode-build` · `/asc-crash-triage` · `/asc-whats-new-writer` · `/asc-ppp-pricing` · +11 more
+
+**Build, Deploy & Workflow**
+
+`/build` · `/scaffold` · `/screenshots` · `/app-store-preflight` · `/revenuecat` · `/review` · `/debugging` · `/fix-error` · `/crash` · `/ui-ux-pro-max`
 
 </td>
 </tr>
 </table>
 
-## Agents (8)
+### Agents (8)
 
 | Agent | Description |
 |---|---|
@@ -178,7 +188,7 @@ Every skill is a `SKILL.md` following the open [Agent Skills spec](https://agent
 | **rules-consolidator** | Feeds resolved errors back into rules to prevent recurrence |
 | **app-store-preflight** | Scans for App Store Review rejection patterns |
 
-## Rules (7)
+### Rules (7)
 
 Always active. Enforced on every file edit.
 
@@ -192,6 +202,8 @@ Always active. Enforced on every file edit.
 | **components** | Button hierarchy, card patterns, empty states, input fields |
 | **scope** | Build minimum functional app — quality over quantity |
 
+---
+
 ## MCP Server
 
 One server, 12 tools. Pure Python 3 — no pip, no npm, no gems.
@@ -202,7 +214,7 @@ Sign in to Apple Developer directly from your AI tool. Replicates [Fastlane Spac
 
 | Tool | Description |
 |---|---|
-| `status` | Live session check — **green** / **yellow** / **red** |
+| `status` | Live session check — **green** · **yellow** · **red** |
 | `login_init` | Start SRP-6a sign-in with Apple ID + password |
 | `login_2fa` | Submit 6-digit 2FA code |
 | `request_sms` | Send 2FA code via SMS instead |
@@ -212,15 +224,32 @@ Sign in to Apple Developer directly from your AI tool. Replicates [Fastlane Spac
 | `list_profiles` | List provisioning profiles |
 | `register_bundle` | Register a new bundle ID |
 
-### ![RevenueCat](https://img.shields.io/badge/-F2545B?style=flat-square&logo=revenuecat&logoColor=white) RevenueCat
+### <img src="https://cdn.simpleicons.org/revenuecat/F2545B" width="16"> RevenueCat
 
 | Tool | Description |
 |---|---|
-| `rc_status` | Live API key validation — **green** / **yellow** / **red** |
+| `rc_status` | Live API key validation — **green** · **yellow** · **red** |
 | `rc_setup` | Configure + validate API key and project ID |
 | `rc_revoke` | Remove stored credentials |
 
+---
+
+## Security
+
+Credentials are stored locally with `chmod 600` permissions and never leave your machine. See [SECURITY.md](SECURITY.md) for details.
+
+| File | Contents |
+|---|---|
+| `~/.apple-developer-auth/cookies.txt` | Apple session cookies |
+| `~/.apple-developer-auth/revenuecat.json` | RevenueCat API key |
+
+Use `revoke` / `rc_revoke` to clear credentials at any time.
+
+---
+
 ## Credits
+
+Built on top of excellent open-source projects:
 
 | | Project | Used for |
 |---|---|---|
@@ -228,10 +257,14 @@ Sign in to Apple Developer directly from your AI tool. Replicates [Fastlane Spac
 | <img src="https://cdn.simpleicons.org/xcode/147EFB" width="14"> | **[XcodeGen](https://github.com/yonaskolb/XcodeGen)** by [@yonaskolb](https://github.com/yonaskolb) | Xcode project generation |
 | <img src="https://cdn.simpleicons.org/fastlane/00F200" width="14"> | **[Fastlane Spaceship](https://github.com/fastlane/fastlane/tree/master/spaceship)** | SRP-6a auth flow reference |
 | <img src="https://cdn.simpleicons.org/revenuecat/F2545B" width="14"> | **[RevenueCat](https://www.revenuecat.com/)** | In-app purchase infrastructure |
-| | **[Agent Skills spec](https://agentskills.io/specification)** | Universal skill format |
-| | **[Model Context Protocol](https://modelcontextprotocol.io/)** | Universal tool protocol |
-| <img src="https://cdn.simpleicons.org/apple/000000" width="14"> | **[Apple Developer Docs](https://developer.apple.com/documentation/)** | Framework references |
+| | **[Agent Skills spec](https://agentskills.io/specification)** | Universal skill format for AI coding tools |
+| | **[Model Context Protocol](https://modelcontextprotocol.io/)** | Universal tool protocol for AI assistants |
+| <img src="https://cdn.simpleicons.org/apple/000000" width="14"> | **[Apple Developer Docs](https://developer.apple.com/documentation/)** | Framework APIs and references |
+
+## Contributing
+
+Contributions welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
 
-MIT
+[MIT](LICENSE)
