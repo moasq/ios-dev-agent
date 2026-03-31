@@ -78,9 +78,101 @@ install_claude() {
   cp "$SCRIPT_DIR/scripts/"* "$TARGET_DIR/.claude/scripts/"
   chmod +x "$TARGET_DIR/.claude/scripts/"*.py "$TARGET_DIR/.claude/scripts/"*.sh 2>/dev/null || true
   ok "Installed .claude/scripts/"
-  # Hooks
+  # Hooks — copy hook scripts into .claude/hooks
   mkdir -p "$TARGET_DIR/.claude/hooks"
-  cp "$SCRIPT_DIR/hooks/hooks.json" "$TARGET_DIR/.claude/hooks/" 2>/dev/null || true
+  cp "$SCRIPT_DIR/scripts/log-build-error.sh" "$TARGET_DIR/.claude/hooks/" 2>/dev/null || true
+  cp "$SCRIPT_DIR/scripts/log-build-resolution.sh" "$TARGET_DIR/.claude/hooks/" 2>/dev/null || true
+  cp "$SCRIPT_DIR/scripts/log-test-failure.sh" "$TARGET_DIR/.claude/hooks/" 2>/dev/null || true
+  cp "$SCRIPT_DIR/scripts/on-build-success.sh" "$TARGET_DIR/.claude/hooks/" 2>/dev/null || true
+  chmod +x "$TARGET_DIR/.claude/hooks/"*.sh 2>/dev/null || true
+  ok "Installed .claude/hooks/"
+  # Error ledger
+  mkdir -p "$TARGET_DIR/.claude/errors"
+  cp "$SCRIPT_DIR/errors/errors.md" "$TARGET_DIR/.claude/errors/" 2>/dev/null || true
+  ok "Installed .claude/errors/errors.md"
+  # Settings template
+  if [ ! -f "$TARGET_DIR/.claude/settings.json" ]; then
+    cat > "$TARGET_DIR/.claude/settings.json" << 'SETTINGS'
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "mcp__apple-auth__status",
+      "mcp__apple-auth__login_init",
+      "mcp__apple-auth__login_2fa",
+      "mcp__apple-auth__request_sms",
+      "mcp__apple-auth__revoke",
+      "mcp__apple-auth__list_apps",
+      "mcp__apple-auth__list_certs",
+      "mcp__apple-auth__list_profiles",
+      "mcp__apple-auth__register_bundle",
+      "mcp__apple-auth__rc_status",
+      "mcp__apple-auth__rc_setup",
+      "mcp__apple-auth__rc_revoke",
+      "WebFetch",
+      "WebSearch"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./.claude/scripts/check-project-config-edits.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./.claude/scripts/check-bash-safety.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "./.claude/scripts/check-swift-structure.sh" },
+          { "type": "command", "command": "./.claude/scripts/check-no-placeholders.sh --hook" },
+          { "type": "command", "command": "./.claude/scripts/check-previews.sh --hook" },
+          { "type": "command", "command": "./.claude/scripts/check-a11y-dynamic-type.sh --hook" },
+          { "type": "command", "command": "./.claude/scripts/check-a11y-icon-buttons.sh --hook" }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "./.claude/hooks/log-build-error.sh" }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "./.claude/hooks/on-build-success.sh" }
+        ]
+      }
+    ]
+  }
+}
+SETTINGS
+    ok "Created .claude/settings.json"
+  else
+    skip ".claude/settings.json already exists"
+  fi
   # CLAUDE.md
   cp "$SCRIPT_DIR/CLAUDE.md" "$TARGET_DIR/" 2>/dev/null || true
   ok "Installed CLAUDE.md"

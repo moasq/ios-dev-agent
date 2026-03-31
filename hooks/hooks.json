@@ -49,6 +49,45 @@
           "type": "command",
           "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/check-a11y-icon-buttons.sh --hook",
           "timeout": 10
+        },
+        {
+          "type": "command",
+          "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/log-build-resolution.sh",
+          "timeout": 10
+        }
+      ]
+    },
+    {
+      "matcher": "mcp__xcode__RunAllTests|mcp__xcode__RunSomeTests",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/log-test-failure.sh",
+          "timeout": 15
+        }
+      ]
+    }
+  ],
+  "PostToolUseFailure": [
+    {
+      "matcher": "Bash|mcp__nanowave-tools__nw_xcode_build|mcp__xcode__BuildProject",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/log-build-error.sh",
+          "timeout": 15
+        }
+      ]
+    }
+  ],
+  "Stop": [
+    {
+      "matcher": ".*",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/on-build-success.sh",
+          "timeout": 45
         }
       ]
     }
