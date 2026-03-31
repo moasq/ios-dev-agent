@@ -1,6 +1,6 @@
 {
   "name": "ios-dev-agent",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Universal iOS development agent — 50+ skills, 8 agents, MCP servers for every AI coding tool",
   "bin": {
     "ios-dev-agent": "bin/cli.js"
