@@ -16,7 +16,6 @@ TOOL="${1:-auto}"
 
 GREEN='\033[32m'
 RED='\033[31m'
-CYAN='\033[36m'
 DIM='\033[2m'
 BOLD='\033[1m'
 RESET='\033[0m'
@@ -24,6 +23,51 @@ RESET='\033[0m'
 log() { echo -e "  $1"; }
 ok() { echo -e "  ${GREEN}+${RESET} $1"; }
 skip() { echo -e "  ${DIM}- $1${RESET}"; }
+
+# ── Shared helpers ───────────────────────────────────────────────────────────
+
+install_skills_to() {
+  local dest="$1"
+  mkdir -p "$dest"
+  cp -R "$SCRIPT_DIR/.agents/skills/"* "$dest/"
+  ok "Skills ($(ls "$dest" | wc -l | tr -d ' ')) → $dest"
+}
+
+install_agents_to() {
+  local dest="$1"
+  mkdir -p "$dest"
+  cp "$SCRIPT_DIR/.agents/agents/"*.md "$dest/"
+  ok "Agents ($(ls "$dest" | wc -l | tr -d ' ')) → $dest"
+}
+
+install_rules_to() {
+  local dest="$1"
+  mkdir -p "$dest"
+  cp "$SCRIPT_DIR/rules/"*.md "$dest/"
+  ok "Rules ($(ls "$dest" | wc -l | tr -d ' ')) → $dest"
+}
+
+install_mcp_scripts_to() {
+  local dest="$1"
+  mkdir -p "$dest"
+  cp "$SCRIPT_DIR/scripts/apple-developer-auth.py" "$dest/"
+  cp "$SCRIPT_DIR/scripts/apple-auth-mcp-server.py" "$dest/"
+  chmod +x "$dest/"*.py 2>/dev/null || true
+  ok "MCP scripts → $dest"
+}
+
+write_mcp_json() {
+  local dest="$1"
+  local server_path="$2"
+  if [ ! -f "$dest" ]; then
+    cat > "$dest" << EOF
+{"mcpServers":{"apple-auth":{"command":"python3","args":["${server_path}"]}}}
+EOF
+    ok "MCP config → $dest"
+  else
+    skip "$dest already exists"
+  fi
+}
 
 # ── Detect tool ──────────────────────────────────────────────────────────────
 
@@ -40,57 +84,32 @@ detect_tool() {
   echo "claude"  # Default
 }
 
-# ── Installers ───────────────────────────────────────────────────────────────
-
-install_agents_skills() {
-  mkdir -p "$TARGET_DIR/.agents"
-  cp -R "$SCRIPT_DIR/.agents/skills" "$TARGET_DIR/.agents/"
-  cp -R "$SCRIPT_DIR/.agents/agents" "$TARGET_DIR/.agents/" 2>/dev/null || true
-  ok "Installed .agents/skills/ ($(ls "$TARGET_DIR/.agents/skills/" | wc -l | tr -d ' ') skills)"
-}
-
-install_scripts() {
-  mkdir -p "$TARGET_DIR/scripts"
-  cp "$SCRIPT_DIR/scripts/apple-developer-auth.py" "$TARGET_DIR/scripts/"
-  cp "$SCRIPT_DIR/scripts/apple-auth-mcp-server.py" "$TARGET_DIR/scripts/"
-  chmod +x "$TARGET_DIR/scripts/"*.py
-  ok "Installed MCP server scripts"
-}
-
-install_rules() {
-  local dest="$1"
-  mkdir -p "$dest"
-  cp "$SCRIPT_DIR/rules/"*.md "$dest/"
-  ok "Installed rules to $dest"
-}
+# ── Tool Installers ──────────────────────────────────────────────────────────
 
 install_claude() {
   log "${BOLD}Claude Code${RESET}"
-  # Claude gets a self-contained .claude/ — no .agents/, no symlinks
-  mkdir -p "$TARGET_DIR/.claude"
-  cp -R "$SCRIPT_DIR/.agents/skills" "$TARGET_DIR/.claude/skills"
-  ok "Installed .claude/skills/ ($(ls "$TARGET_DIR/.claude/skills/" | wc -l | tr -d ' ') skills)"
-  cp -R "$SCRIPT_DIR/.agents/agents" "$TARGET_DIR/.claude/agents" 2>/dev/null || true
-  ok "Installed .claude/agents/"
-  install_rules "$TARGET_DIR/.claude/rules"
-  # Scripts go inside .claude/scripts
+  # Self-contained .claude/ — no .agents/, no symlinks
+  install_skills_to "$TARGET_DIR/.claude/skills"
+  install_agents_to "$TARGET_DIR/.claude/agents"
+  install_rules_to "$TARGET_DIR/.claude/rules"
+  # All scripts (MCP + hooks + build tools)
   mkdir -p "$TARGET_DIR/.claude/scripts"
   cp "$SCRIPT_DIR/scripts/"* "$TARGET_DIR/.claude/scripts/"
   chmod +x "$TARGET_DIR/.claude/scripts/"*.py "$TARGET_DIR/.claude/scripts/"*.sh 2>/dev/null || true
-  ok "Installed .claude/scripts/"
-  # Hooks — copy hook scripts into .claude/hooks
+  ok "Scripts ($(ls "$TARGET_DIR/.claude/scripts/" | wc -l | tr -d ' ')) → .claude/scripts/"
+  # Hook scripts
   mkdir -p "$TARGET_DIR/.claude/hooks"
-  cp "$SCRIPT_DIR/scripts/log-build-error.sh" "$TARGET_DIR/.claude/hooks/" 2>/dev/null || true
-  cp "$SCRIPT_DIR/scripts/log-build-resolution.sh" "$TARGET_DIR/.claude/hooks/" 2>/dev/null || true
-  cp "$SCRIPT_DIR/scripts/log-test-failure.sh" "$TARGET_DIR/.claude/hooks/" 2>/dev/null || true
-  cp "$SCRIPT_DIR/scripts/on-build-success.sh" "$TARGET_DIR/.claude/hooks/" 2>/dev/null || true
+  cp "$SCRIPT_DIR/scripts/log-build-error.sh" "$TARGET_DIR/.claude/hooks/"
+  cp "$SCRIPT_DIR/scripts/log-build-resolution.sh" "$TARGET_DIR/.claude/hooks/"
+  cp "$SCRIPT_DIR/scripts/log-test-failure.sh" "$TARGET_DIR/.claude/hooks/"
+  cp "$SCRIPT_DIR/scripts/on-build-success.sh" "$TARGET_DIR/.claude/hooks/"
   chmod +x "$TARGET_DIR/.claude/hooks/"*.sh 2>/dev/null || true
-  ok "Installed .claude/hooks/"
+  ok "Hooks (4) → .claude/hooks/"
   # Error ledger
   mkdir -p "$TARGET_DIR/.claude/errors"
-  cp "$SCRIPT_DIR/errors/errors.md" "$TARGET_DIR/.claude/errors/" 2>/dev/null || true
-  ok "Installed .claude/errors/errors.md"
-  # Settings template
+  cp "$SCRIPT_DIR/errors/errors.md" "$TARGET_DIR/.claude/errors/"
+  ok "Error ledger → .claude/errors/"
+  # Settings
   if [ ! -f "$TARGET_DIR/.claude/settings.json" ]; then
     cat > "$TARGET_DIR/.claude/settings.json" << 'SETTINGS'
 {
@@ -122,21 +141,11 @@ install_claude() {
     "PreToolUse": [
       {
         "matcher": "Edit|Write|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "./.claude/scripts/check-project-config-edits.sh"
-          }
-        ]
+        "hooks": [{ "type": "command", "command": "./.claude/scripts/check-project-config-edits.sh" }]
       },
       {
         "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "./.claude/scripts/check-bash-safety.sh"
-          }
-        ]
+        "hooks": [{ "type": "command", "command": "./.claude/scripts/check-bash-safety.sh" }]
       }
     ],
     "PostToolUse": [
@@ -154,156 +163,195 @@ install_claude() {
     "PostToolUseFailure": [
       {
         "matcher": "Bash",
-        "hooks": [
-          { "type": "command", "command": "./.claude/hooks/log-build-error.sh" }
-        ]
+        "hooks": [{ "type": "command", "command": "./.claude/hooks/log-build-error.sh" }]
       }
     ],
     "Stop": [
       {
-        "hooks": [
-          { "type": "command", "command": "./.claude/hooks/on-build-success.sh" }
-        ]
+        "hooks": [{ "type": "command", "command": "./.claude/hooks/on-build-success.sh" }]
       }
     ]
   }
 }
 SETTINGS
-    ok "Created .claude/settings.json"
+    ok "Settings → .claude/settings.json"
   else
     skip ".claude/settings.json already exists"
   fi
-  # CLAUDE.md
+  # CLAUDE.md + .mcp.json
   cp "$SCRIPT_DIR/CLAUDE.md" "$TARGET_DIR/" 2>/dev/null || true
-  ok "Installed CLAUDE.md"
-  # MCP config — paths relative to .claude/scripts
-  if [ ! -f "$TARGET_DIR/.mcp.json" ]; then
-    echo '{"mcpServers":{"apple-auth":{"command":"python3","args":[".claude/scripts/apple-auth-mcp-server.py"]}}}' > "$TARGET_DIR/.mcp.json"
-    ok "Created .mcp.json"
-  else
-    skip ".mcp.json already exists — add apple-auth MCP manually"
-  fi
-  ok "Claude Code setup complete"
+  ok "CLAUDE.md"
+  write_mcp_json "$TARGET_DIR/.mcp.json" ".claude/scripts/apple-auth-mcp-server.py"
 }
 
 install_cursor() {
   log "${BOLD}Cursor${RESET}"
-  install_agents_skills
+  install_skills_to "$TARGET_DIR/.agents/skills"
+  install_agents_to "$TARGET_DIR/.agents/agents"
+  # Cursor rules in .mdc format
   mkdir -p "$TARGET_DIR/.cursor/rules"
   cp "$SCRIPT_DIR/.cursor/rules/"*.mdc "$TARGET_DIR/.cursor/rules/"
-  ok "Installed .cursor/rules/ (.mdc format)"
-  install_scripts
-  if [ ! -f "$TARGET_DIR/.cursor/mcp.json" ]; then
-    cp "$SCRIPT_DIR/.cursor/mcp.json" "$TARGET_DIR/.cursor/mcp.json"
-    ok "Created .cursor/mcp.json"
-  else
-    skip ".cursor/mcp.json already exists"
-  fi
-  ok "Cursor setup complete"
+  ok "Rules (.mdc) → .cursor/rules/"
+  install_mcp_scripts_to "$TARGET_DIR/scripts"
+  write_mcp_json "$TARGET_DIR/.cursor/mcp.json" "scripts/apple-auth-mcp-server.py"
+  cp "$SCRIPT_DIR/AGENTS.md" "$TARGET_DIR/" 2>/dev/null || true
+  ok "AGENTS.md"
 }
 
 install_codex() {
-  log "${BOLD}Codex${RESET}"
-  install_agents_skills
-  install_scripts
+  log "${BOLD}Codex (OpenAI)${RESET}"
+  install_skills_to "$TARGET_DIR/.agents/skills"
+  install_agents_to "$TARGET_DIR/.agents/agents"
+  install_rules_to "$TARGET_DIR/.agents/rules"
+  install_mcp_scripts_to "$TARGET_DIR/scripts"
   cp "$SCRIPT_DIR/AGENTS.md" "$TARGET_DIR/" 2>/dev/null || true
-  ok "Installed AGENTS.md"
-  ok "Codex setup complete — run: codex mcp add apple-auth -- python3 scripts/apple-auth-mcp-server.py"
+  ok "AGENTS.md"
+  log "${DIM}  Run: codex mcp add apple-auth -- python3 scripts/apple-auth-mcp-server.py${RESET}"
 }
 
 install_windsurf() {
   log "${BOLD}Windsurf${RESET}"
-  install_agents_skills
-  install_rules "$TARGET_DIR/.windsurf/rules"
-  install_scripts
-  ok "Windsurf setup complete — add MCP to ~/.codeium/windsurf/mcp_config.json"
+  install_skills_to "$TARGET_DIR/.agents/skills"
+  install_agents_to "$TARGET_DIR/.agents/agents"
+  install_rules_to "$TARGET_DIR/.windsurf/rules"
+  install_mcp_scripts_to "$TARGET_DIR/scripts"
+  cp "$SCRIPT_DIR/AGENTS.md" "$TARGET_DIR/" 2>/dev/null || true
+  ok "AGENTS.md"
+  log "${DIM}  Add to ~/.codeium/windsurf/mcp_config.json:${RESET}"
+  log "${DIM}  {\"mcpServers\":{\"apple-auth\":{\"command\":\"python3\",\"args\":[\"scripts/apple-auth-mcp-server.py\"]}}}${RESET}"
+}
+
+install_antigravity() {
+  log "${BOLD}Antigravity (Google)${RESET}"
+  install_skills_to "$TARGET_DIR/.agents/skills"
+  install_agents_to "$TARGET_DIR/.agents/agents"
+  install_rules_to "$TARGET_DIR/.agent/rules"
+  install_mcp_scripts_to "$TARGET_DIR/scripts"
+  cp "$SCRIPT_DIR/GEMINI.md" "$TARGET_DIR/" 2>/dev/null || true
+  ok "GEMINI.md"
+  log "${DIM}  Add to ~/.gemini/antigravity/mcp_config.json:${RESET}"
+  log "${DIM}  {\"mcpServers\":{\"apple-auth\":{\"command\":\"python3\",\"args\":[\"scripts/apple-auth-mcp-server.py\"]}}}${RESET}"
 }
 
 install_opencode() {
   log "${BOLD}OpenCode${RESET}"
-  install_agents_skills
-  install_rules "$TARGET_DIR/.opencode/rules"
-  install_scripts
-  mkdir -p "$TARGET_DIR/.opencode/skills"
-  ln -sf ../../.agents/skills "$TARGET_DIR/.opencode/skills" 2>/dev/null || true
+  install_skills_to "$TARGET_DIR/.opencode/skills"
+  install_agents_to "$TARGET_DIR/.opencode/agents"
+  install_rules_to "$TARGET_DIR/.opencode/rules"
+  install_mcp_scripts_to "$TARGET_DIR/scripts"
   cp "$SCRIPT_DIR/AGENTS.md" "$TARGET_DIR/" 2>/dev/null || true
-  ok "OpenCode setup complete — add MCP to opencode.json"
-}
-
-install_antigravity() {
-  log "${BOLD}Antigravity${RESET}"
-  install_agents_skills
-  install_scripts
-  cp "$SCRIPT_DIR/GEMINI.md" "$TARGET_DIR/" 2>/dev/null || true
-  ok "Installed GEMINI.md"
-  ok "Antigravity setup complete — add MCP to ~/.gemini/antigravity/mcp_config.json"
+  ok "AGENTS.md"
+  log "${DIM}  Add mcpServers to opencode.json:${RESET}"
+  log "${DIM}  {\"mcpServers\":{\"apple-auth\":{\"command\":\"python3\",\"args\":[\"scripts/apple-auth-mcp-server.py\"]}}}${RESET}"
 }
 
 install_amp() {
-  log "${BOLD}Amp${RESET}"
-  install_agents_skills
-  install_scripts
+  log "${BOLD}Amp (Sourcegraph)${RESET}"
+  install_skills_to "$TARGET_DIR/.agents/skills"
+  install_agents_to "$TARGET_DIR/.agents/agents"
+  install_rules_to "$TARGET_DIR/.agents/rules"
+  install_mcp_scripts_to "$TARGET_DIR/scripts"
   cp "$SCRIPT_DIR/AGENTS.md" "$TARGET_DIR/" 2>/dev/null || true
-  ok "Amp setup complete — add MCP to ~/.config/amp/settings.json"
+  ok "AGENTS.md"
+  log "${DIM}  Add MCP to ~/.config/amp/settings.json${RESET}"
 }
 
 install_junie() {
-  log "${BOLD}Junie${RESET}"
-  install_agents_skills
-  install_scripts
+  log "${BOLD}Junie (JetBrains)${RESET}"
+  install_skills_to "$TARGET_DIR/.agents/skills"
+  install_agents_to "$TARGET_DIR/.agents/agents"
+  install_rules_to "$TARGET_DIR/.agents/rules"
+  install_mcp_scripts_to "$TARGET_DIR/scripts"
   mkdir -p "$TARGET_DIR/.junie/mcp"
-  cp "$SCRIPT_DIR/.junie/mcp/mcp.json" "$TARGET_DIR/.junie/mcp/"
+  write_mcp_json "$TARGET_DIR/.junie/mcp/mcp.json" "scripts/apple-auth-mcp-server.py"
   cp "$SCRIPT_DIR/AGENTS.md" "$TARGET_DIR/" 2>/dev/null || true
-  ok "Junie setup complete"
+  ok "AGENTS.md"
 }
 
 install_cline() {
   log "${BOLD}Cline${RESET}"
-  install_agents_skills
-  install_rules "$TARGET_DIR/.clinerules"
-  install_scripts
-  ok "Cline setup complete — add MCP via Cline extension settings"
+  install_skills_to "$TARGET_DIR/.agents/skills"
+  install_agents_to "$TARGET_DIR/.agents/agents"
+  install_rules_to "$TARGET_DIR/.clinerules"
+  install_mcp_scripts_to "$TARGET_DIR/scripts"
+  cp "$SCRIPT_DIR/AGENTS.md" "$TARGET_DIR/" 2>/dev/null || true
+  ok "AGENTS.md"
+  log "${DIM}  Add MCP via Cline extension settings UI${RESET}"
 }
 
 install_roo() {
   log "${BOLD}Roo Code${RESET}"
-  install_agents_skills
-  install_rules "$TARGET_DIR/.roo/rules"
-  install_scripts
-  cp "$SCRIPT_DIR/.roo/mcp.json" "$TARGET_DIR/.roo/"
-  ok "Roo Code setup complete"
+  install_skills_to "$TARGET_DIR/.agents/skills"
+  install_agents_to "$TARGET_DIR/.agents/agents"
+  install_rules_to "$TARGET_DIR/.roo/rules"
+  install_mcp_scripts_to "$TARGET_DIR/scripts"
+  write_mcp_json "$TARGET_DIR/.roo/mcp.json" "scripts/apple-auth-mcp-server.py"
+  cp "$SCRIPT_DIR/AGENTS.md" "$TARGET_DIR/" 2>/dev/null || true
+  ok "AGENTS.md"
 }
 
 install_continue() {
   log "${BOLD}Continue.dev${RESET}"
-  install_agents_skills
-  install_rules "$TARGET_DIR/.continue/rules"
-  install_scripts
-  ok "Continue setup complete — add MCP to .continue/mcpServers/"
+  install_skills_to "$TARGET_DIR/.agents/skills"
+  install_agents_to "$TARGET_DIR/.agents/agents"
+  install_rules_to "$TARGET_DIR/.continue/rules"
+  install_mcp_scripts_to "$TARGET_DIR/scripts"
+  cp "$SCRIPT_DIR/AGENTS.md" "$TARGET_DIR/" 2>/dev/null || true
+  ok "AGENTS.md"
+  log "${DIM}  Add MCP to .continue/mcpServers/ as YAML${RESET}"
+}
+
+install_copilot() {
+  log "${BOLD}GitHub Copilot${RESET}"
+  install_skills_to "$TARGET_DIR/.agents/skills"
+  install_agents_to "$TARGET_DIR/.agents/agents"
+  install_mcp_scripts_to "$TARGET_DIR/scripts"
+  # Copilot instructions
+  mkdir -p "$TARGET_DIR/.github"
+  cp "$SCRIPT_DIR/AGENTS.md" "$TARGET_DIR/.github/copilot-instructions.md" 2>/dev/null || true
+  ok "Copilot instructions → .github/copilot-instructions.md"
+  cp "$SCRIPT_DIR/AGENTS.md" "$TARGET_DIR/" 2>/dev/null || true
+  ok "AGENTS.md"
+  log "${DIM}  Configure MCP in GitHub repo settings${RESET}"
+}
+
+install_gemini() {
+  log "${BOLD}Gemini CLI${RESET}"
+  install_skills_to "$TARGET_DIR/.agents/skills"
+  install_agents_to "$TARGET_DIR/.agents/agents"
+  install_rules_to "$TARGET_DIR/.agents/rules"
+  install_mcp_scripts_to "$TARGET_DIR/scripts"
+  cp "$SCRIPT_DIR/GEMINI.md" "$TARGET_DIR/" 2>/dev/null || true
+  ok "GEMINI.md"
+  log "${DIM}  Run: gemini mcp add apple-auth -- python3 scripts/apple-auth-mcp-server.py${RESET}"
+}
+
+install_goose() {
+  log "${BOLD}Goose (Block)${RESET}"
+  install_skills_to "$TARGET_DIR/.agents/skills"
+  install_agents_to "$TARGET_DIR/.agents/agents"
+  install_rules_to "$TARGET_DIR/.agents/rules"
+  install_mcp_scripts_to "$TARGET_DIR/scripts"
+  cp "$SCRIPT_DIR/AGENTS.md" "$TARGET_DIR/" 2>/dev/null || true
+  ok "AGENTS.md"
+  log "${DIM}  Add MCP to goose/config.yaml${RESET}"
 }
 
 install_all() {
-  install_claude
-  echo
-  install_cursor
-  echo
-  install_codex
-  echo
-  install_windsurf
-  echo
-  install_opencode
-  echo
-  install_antigravity
-  echo
-  install_amp
-  echo
-  install_junie
-  echo
-  install_cline
-  echo
-  install_roo
-  echo
-  install_continue
+  install_claude;       echo
+  install_cursor;       echo
+  install_codex;        echo
+  install_windsurf;     echo
+  install_antigravity;  echo
+  install_opencode;     echo
+  install_amp;          echo
+  install_junie;        echo
+  install_cline;        echo
+  install_roo;          echo
+  install_continue;     echo
+  install_copilot;      echo
+  install_gemini;       echo
+  install_goose
 }
 
 # ── Main ─────────────────────────────────────────────────────────────────────
@@ -315,8 +363,8 @@ echo
 
 if [ "$TOOL" = "--list" ]; then
   echo "  Supported tools:"
-  echo "    claude, cursor, codex, windsurf, opencode,"
-  echo "    antigravity, amp, junie, cline, roo, continue, all"
+  echo "    claude, cursor, codex, windsurf, antigravity, opencode,"
+  echo "    amp, junie, cline, roo, continue, copilot, gemini, goose, all"
   exit 0
 fi
 
@@ -335,13 +383,16 @@ case "$TOOL" in
   cursor)       install_cursor ;;
   codex)        install_codex ;;
   windsurf)     install_windsurf ;;
-  opencode)     install_opencode ;;
   antigravity)  install_antigravity ;;
+  opencode)     install_opencode ;;
   amp)          install_amp ;;
   junie)        install_junie ;;
   cline)        install_cline ;;
   roo)          install_roo ;;
   continue)     install_continue ;;
+  copilot)      install_copilot ;;
+  gemini)       install_gemini ;;
+  goose)        install_goose ;;
   all)          install_all ;;
   *)
     echo -e "  ${RED}Unknown tool: $TOOL${RESET}"
