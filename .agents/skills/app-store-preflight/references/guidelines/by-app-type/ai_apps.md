@@ -1,10 +1,12 @@
 # Checklist: AI-Powered / Generative AI Apps
 
-Guidelines specifically applying to apps that use AI services (ChatGPT, Gemini, Claude, etc.), generative AI, or deep synthesis technology.
+Guidelines specifically applying to apps that use AI services (ChatGPT, Gemini, Claude, etc.), generative AI, or deep synthesis technology. Items marked with **[REAL REJECTION]** are patterns that have caused actual App Store rejections.
 
 ## Critical (Will Reject)
 
-- [ ] **5 (China DST)** — If distributing in China: remove all references to OpenAI, ChatGPT, GPT, Gemini, Claude, Anthropic, Midjourney, DALL-E from metadata
+- [ ] **5 (China DST)** — If distributing in China: remove all references to OpenAI, ChatGPT, GPT, Gemini, Claude, Anthropic, Midjourney, DALL-E, Copilot, Stable Diffusion from metadata across ALL locales (not just zh-Hans). Apple reviews all locales when the app is available in China. **[REAL REJECTION]**
+  - Detect: `grep -ri "chatgpt\|openai\|gpt-4\|gemini\|claude\|anthropic\|midjourney\|dall-e\|copilot" ./metadata/`
+  - Options: (1) Remove references, use "AI-powered" generically (2) Deselect China mainland in ASC (3) Obtain MIIT license
 - [ ] **5 (China DST)** — If distributing in China: suppress AI functionality or obtain MIIT license
 - [ ] **1.1.6** — No false information or misleading AI capabilities (e.g., "AI doctor")
 - [ ] **1.4.1** — AI health advice: must include medical disclaimers; can't substitute for professional diagnosis
@@ -12,7 +14,7 @@ Guidelines specifically applying to apps that use AI services (ChatGPT, Gemini, 
 
 ## Important (Common Rejections)
 
-- [ ] **2.1** — Review notes MUST proactively state whether AI is on-device or cloud-based. Apple will ask "Does your app use third-party AI?" — answer it upfront
+- [ ] **2.1** — Review notes MUST proactively state whether AI is on-device or cloud-based. Apple will ask "Does your app use third-party AI?" — answer it upfront. **[REAL REJECTION]**
 - [ ] **2.1** — If on-device AI (FoundationModels, Core ML, MLX): state explicitly that no user data is sent to any server
 - [ ] **2.1** — If third-party AI (OpenAI, Google, etc.): list which personal data is sent, and confirm explicit user consent exists in the UI
 - [ ] **2.1** — If local model download (MLX, Core ML from remote): clarify that only model weights are downloaded, no user data is transmitted
@@ -23,19 +25,3 @@ Guidelines specifically applying to apps that use AI services (ChatGPT, Gemini, 
 - [ ] **2.5.14** — Explicit consent required for AI processing of user recordings/inputs
 - [ ] **5.1.1(iii)** — Data minimization: don't send more data to AI than necessary
 - [ ] **3.1.1** — AI features/credits unlocked via IAP (not external payment for digital content)
-
-## China Storefront Specific
-
-Banned AI terms in metadata for China (all locales, not just zh-Hans):
-- `ChatGPT`, `GPT-4`, `GPT-4o`, `GPT`  
-- `OpenAI`
-- `Gemini`, `Bard` (Google)
-- `Claude`, `Anthropic`
-- `Midjourney`, `DALL-E`, `DALL·E`
-- `Copilot` (in AI context)
-- `Stable Diffusion` (cloud API context)
-
-### Options
-1. **Remove references** → Use "AI-powered" / "smart assistant" generically
-2. **Exclude China** → Deselect China mainland in App Store Connect
-3. **Obtain compliance** → Get MIIT license for DST services
