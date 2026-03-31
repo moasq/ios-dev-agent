@@ -1,16 +1,13 @@
 {
   "name": "ios-dev-agent",
-  "version": "1.0.2",
+  "version": "1.0.6",
   "description": "End-to-end iOS development kit — 50+ skills, 8 agents, 7 rules, Apple Developer auth + RevenueCat MCP servers.",
   "author": {
     "name": "moasq",
     "url": "https://github.com/moasq"
   },
   "homepage": "https://github.com/moasq/ios-dev-agent",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/moasq/ios-dev-agent.git"
-  },
+  "repository": "https://github.com/moasq/ios-dev-agent",
   "license": "MIT",
   "keywords": [
     "ios",
@@ -23,6 +20,5 @@
     "apple-developer",
     "mcp"
   ],
-  "hooks": "./hooks/hooks.json",
   "mcpServers": "./.mcp.json"
 }

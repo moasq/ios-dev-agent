@@ -1,95 +1,52 @@
 {
-  "PreToolUse": [
-    {
-      "matcher": "Edit|Write|MultiEdit",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/check-project-config-edits.sh",
-          "timeout": 10
-        }
-      ]
-    },
-    {
-      "matcher": "Bash",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/check-bash-safety.sh",
-          "timeout": 10
-        }
-      ]
-    }
-  ],
-  "PostToolUse": [
-    {
-      "matcher": "Edit|Write|MultiEdit",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/check-swift-structure.sh",
-          "timeout": 10
-        },
-        {
-          "type": "command",
-          "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/check-no-placeholders.sh --hook",
-          "timeout": 10
-        },
-        {
-          "type": "command",
-          "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/check-previews.sh --hook",
-          "timeout": 10
-        },
-        {
-          "type": "command",
-          "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/check-a11y-dynamic-type.sh --hook",
-          "timeout": 10
-        },
-        {
-          "type": "command",
-          "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/check-a11y-icon-buttons.sh --hook",
-          "timeout": 10
-        },
-        {
-          "type": "command",
-          "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/log-build-resolution.sh",
-          "timeout": 10
-        }
-      ]
-    },
-    {
-      "matcher": "mcp__xcode__RunAllTests|mcp__xcode__RunSomeTests",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/log-test-failure.sh",
-          "timeout": 15
-        }
-      ]
-    }
-  ],
-  "PostToolUseFailure": [
-    {
-      "matcher": "Bash|mcp__nanowave-tools__nw_xcode_build|mcp__xcode__BuildProject",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/log-build-error.sh",
-          "timeout": 15
-        }
-      ]
-    }
-  ],
-  "Stop": [
-    {
-      "matcher": ".*",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/on-build-success.sh",
-          "timeout": 45
-        }
-      ]
-    }
-  ]
+  "description": "iOS Dev Agent hooks — validates Swift structure, accessibility, placeholders, and logs build errors",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/check-project-config-edits.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/check-bash-safety.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/check-swift-structure.sh" },
+          { "type": "command", "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/check-no-placeholders.sh --hook" },
+          { "type": "command", "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/check-previews.sh --hook" },
+          { "type": "command", "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/check-a11y-dynamic-type.sh --hook" },
+          { "type": "command", "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/check-a11y-icon-buttons.sh --hook" }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/log-build-error.sh" }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/on-build-success.sh" }
+        ]
+      }
+    ]
+  }
 }
