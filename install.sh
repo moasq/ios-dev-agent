@@ -66,18 +66,27 @@ install_rules() {
 
 install_claude() {
   log "${BOLD}Claude Code${RESET}"
-  install_agents_skills
+  # Claude gets a self-contained .claude/ — no .agents/, no symlinks
   mkdir -p "$TARGET_DIR/.claude"
-  # Symlink .claude dirs to .agents
-  ln -sf ../.agents/skills "$TARGET_DIR/.claude/skills" 2>/dev/null || true
-  ln -sf ../.agents/agents "$TARGET_DIR/.claude/agents" 2>/dev/null || true
+  cp -R "$SCRIPT_DIR/.agents/skills" "$TARGET_DIR/.claude/skills"
+  ok "Installed .claude/skills/ ($(ls "$TARGET_DIR/.claude/skills/" | wc -l | tr -d ' ') skills)"
+  cp -R "$SCRIPT_DIR/.agents/agents" "$TARGET_DIR/.claude/agents" 2>/dev/null || true
+  ok "Installed .claude/agents/"
   install_rules "$TARGET_DIR/.claude/rules"
-  install_scripts
-  ln -sf ../scripts "$TARGET_DIR/.claude/scripts" 2>/dev/null || true
+  # Scripts go inside .claude/scripts
+  mkdir -p "$TARGET_DIR/.claude/scripts"
+  cp "$SCRIPT_DIR/scripts/"* "$TARGET_DIR/.claude/scripts/"
+  chmod +x "$TARGET_DIR/.claude/scripts/"*.py "$TARGET_DIR/.claude/scripts/"*.sh 2>/dev/null || true
+  ok "Installed .claude/scripts/"
+  # Hooks
+  mkdir -p "$TARGET_DIR/.claude/hooks"
+  cp "$SCRIPT_DIR/hooks/hooks.json" "$TARGET_DIR/.claude/hooks/" 2>/dev/null || true
+  # CLAUDE.md
   cp "$SCRIPT_DIR/CLAUDE.md" "$TARGET_DIR/" 2>/dev/null || true
-  # MCP config
+  ok "Installed CLAUDE.md"
+  # MCP config — paths relative to .claude/scripts
   if [ ! -f "$TARGET_DIR/.mcp.json" ]; then
-    echo '{"mcpServers":{"apple-auth":{"command":"python3","args":["scripts/apple-auth-mcp-server.py"]}}}' > "$TARGET_DIR/.mcp.json"
+    echo '{"mcpServers":{"apple-auth":{"command":"python3","args":[".claude/scripts/apple-auth-mcp-server.py"]}}}' > "$TARGET_DIR/.mcp.json"
     ok "Created .mcp.json"
   else
     skip ".mcp.json already exists — add apple-auth MCP manually"
