@@ -12,6 +12,10 @@ Guidelines specifically applying to apps that use AI services (ChatGPT, Gemini, 
 
 ## Important (Common Rejections)
 
+- [ ] **2.1** — Review notes MUST proactively state whether AI is on-device or cloud-based. Apple will ask "Does your app use third-party AI?" — answer it upfront
+- [ ] **2.1** — If on-device AI (FoundationModels, Core ML, MLX): state explicitly that no user data is sent to any server
+- [ ] **2.1** — If third-party AI (OpenAI, Google, etc.): list which personal data is sent, and confirm explicit user consent exists in the UI
+- [ ] **2.1** — If local model download (MLX, Core ML from remote): clarify that only model weights are downloaded, no user data is transmitted
 - [ ] **5.2.5** — Don't use "GPT", "ChatGPT", "OpenAI", "Gemini" as part of app name unless you are the brand owner
 - [ ] **2.3.7** — Don't keyword-stuff with AI brand names (ChatGPT, GPT-4, Gemini, etc.)
 - [ ] **1.2** — If AI generates user-facing content: implement content moderation/filtering
